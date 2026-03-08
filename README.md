@@ -67,16 +67,16 @@ do_stats = False
 ```
 Submit the script for processing as a job array.  The default imaging produces 11 chunks. 
 ```
-**user@slurm:** sbatch --array=0-11 run_llus_test_image_array.bash
+ser@slurm: sbatch --array=0-11 run_llus_test_image_array.bash
 ```
 
 If you don't know the number of chunks for your imaging, just run the first chunk
 ```
-**user@slurm:** sbatch --array=0 run_llus_test_image_array.bash
+user@slurm: sbatch --array=0 run_llus_test_image_array.bash
 ```
 and then inspect the output file `JOBNUMBER_JOBNAME.out` and look for the imaging line `Chunk 0 of 11` where the latter number will tell you how many chunks are being run.  From there, submit the remainder of the jobs.
 ```
-**user@slurm:** sbatch --array=1-11 run_llus_test_image_array.bash
+user@slurm: sbatch --array=1-11 run_llus_test_image_array.bash
 ```
 
 ### Step 3:
@@ -90,6 +90,6 @@ do_stats = False
 ```
 Submit the script for processing.
 ```
-**user@slurm:** sbatch run_llus_test_image_array.bash
+user@slurm: sbatch run_llus_test_image_array.bash
 ```
 The resulting image will be stored in the `postprocess` directory.
