@@ -26,7 +26,6 @@ chunk_num = int(sys.argv[-1])
 
 # Locate the master key
 key_file = '/users/eros/code/meerkat_processing/llus_keys/master_key.txt'
-
 sys.path.append(os.path.expanduser("/users/eros/code/phangs_imaging_scripts/"))
 sys.path.append(os.path.expanduser("/users/eros/code/analysis_scripts/"))
 
