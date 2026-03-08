@@ -79,7 +79,7 @@ If you don't know the number of chunks for your imaging, just run the first chun
 ```
 user@slurm: sbatch --array=0 run_llus_test_image_array.bash
 ```
-and then inspect the output file `JOBNUMBER_JOBNAME.out` and look for the imaging line `Chunk 0 of 11` where the latter number will tell you how many chunks are being run.  From there, submit the remainder of the jobs.
+and then inspect the output file `JOBNAME_JOBNUMBER.out` and look for the imaging line `Chunk 0 of 11` where the latter number will tell you how many chunks are being run.  From there, submit the remainder of the jobs.
 ```
 user@slurm: sbatch --array=1-11 run_llus_test_image_array.bash
 ```
