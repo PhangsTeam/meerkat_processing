@@ -51,9 +51,14 @@ do_assemble = False
 do_postprocess = False
 do_stats = False
 ```
-Submit the script for processing:
+Edit the job submission script `run_llus_test_image_array.bash` to include your email in the commented block at the top.  This will send you emails about job status. Edit the path of the script to point to the correct location in your code directory.
 ```
-**user@slurm:** sbatch run_llus_test_image_array.bash
+casapy /users/eros/code/meerkat_processing/run_llus_test_image.py $SLURM_ARRAY_TASK_ID
+```
+
+Submit the script for processing from the linux prompt on the login node of ilifu.
+```
+user@slurm: sbatch run_llus_test_image_array.bash
 ```
 
 ### Step 2:
@@ -67,7 +72,7 @@ do_stats = False
 ```
 Submit the script for processing as a job array.  The default imaging produces 11 chunks. 
 ```
-ser@slurm: sbatch --array=0-11 run_llus_test_image_array.bash
+user@slurm: sbatch --array=0-11 run_llus_test_image_array.bash
 ```
 
 If you don't know the number of chunks for your imaging, just run the first chunk
