@@ -11,19 +11,19 @@ from astropy.io import fits
 # Use boolean flags to set the steps to be performed when the pipeline
 # is called. See descriptions below (but only edit here).
 
-do_staging = False
-do_imaging = True
-do_assemble = True
-do_postprocess = True
-do_stats = True
 
 chunksize = 10
-target = 'ic5332'
+target = 'J0459-26'
+do_staging = False
+do_imaging = True
+do_assemble = False
+do_postprocess = False
+do_stats = False
 
 # Pass the target name from the cmd line
 
 chunk_num = int(sys.argv[-1])
-print(f'Imaging Chunk {chunk_num}')
+
 # Locate the master key
 key_file = '/users/eros/code/meerkat_processing/llus_keys/master_key.txt'
 
