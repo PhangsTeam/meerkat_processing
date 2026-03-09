@@ -6,6 +6,7 @@
 # delimiter: ','
 # schema: astropy-2.0
 target,dist
+J0459-26,10.0
 circinus,4.2
 ic1954,12.8
 ic5273,14.18

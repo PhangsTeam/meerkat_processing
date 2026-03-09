@@ -15,14 +15,19 @@ from astropy.io import fits
 chunksize = 10
 target = 'J0459-26'
 do_staging = False
-do_imaging = True
+do_imaging = False
 do_assemble = False
 do_postprocess = False
 do_stats = False
 
 # Pass the target name from the cmd line
 
-chunk_num = int(sys.argv[-1])
+try: 
+    chunk_num = int(sys.argv[-1])
+except ValueError:
+    chunk_num = 0
+
+    
 
 # Locate the master key
 key_file = '/users/eros/code/meerkat_processing/llus_keys/master_key.txt'
@@ -39,6 +44,7 @@ from phangsPipeline import handlerKeys as kh
 from phangsPipeline import handlerVis as uvh
 from phangsPipeline import handlerImaging as imh
 from phangsPipeline import handlerPostprocess as pph
+from phangsPipeline import handlerDerived as der
 
 from phangsPipeline.handlerImagingChunked import ImagingChunkedHandler
 
@@ -176,4 +182,69 @@ if do_assemble:
 if do_postprocess:
     this_pph.loop_postprocess(do_prep=True, do_feather=True,
                               do_mosaic=True, do_cleanup=True)
+
+if do_derived:
+    import pip
+    pip.main(['install', 'astropy', '--user'])
+    pip.main(['install', 'spectral_cube', '--user'])
+    import astropy
+    import spectral_cube
+    print('Got here')
+
+    this_der = der.DerivedHandler(key_handler=this_kh)
+    this_der.set_interf_configs(only=['meerkat'])
+    this_der.set_feather_configs(only=[])
+    this_der.set_line_products(only=['hi21cm'])
+    do_convolve = True
+    do_noise = True
+    do_strictmask = True
+    do_broadmask = True
+    do_moments = True
+    do_secondary = True
+
+    if do_convolve:
+        this_der.loop_derive_products(do_convolve=True, do_noise=False,
+                                    do_strictmask=False, do_broadmask=False,
+                                    do_moments=False, do_secondary=False)
+
+    # Estimate the noise from the signal-free regions of the data to
+    # produce a three-dimensional noise model for each cube.
+
+    if do_noise:
+        this_der.loop_derive_products(do_convolve=False, do_noise=True,
+                                    do_strictmask=False, do_broadmask=False,
+                                    do_moments=False, do_secondary=False)
+
+    # Construct "strict masks" for each cube at each resolution.
+
+    if do_strictmask:
+        this_der.loop_derive_products(do_convolve=False, do_noise=False,
+                                    do_strictmask=True, do_broadmask=False,
+                                    do_moments=False, do_secondary=False)
+
+    # Combine the strict masks across all linked resolutions to form
+    # "broad masks" that have high completeness.
+
+    if do_broadmask:
+        this_der.loop_derive_products(do_convolve=False, do_noise=False,
+                                    do_strictmask=False, do_broadmask=True,
+                                    do_moments=False, do_secondary=False)
+
+    # Apply the masks and use the cubes and noise models to produce moment
+    # maps with associated uncertainty.
+
+    if do_moments:
+        this_der.loop_derive_products(do_convolve=False, do_noise=False,
+                                    do_strictmask=False, do_broadmask=False,
+                                    do_moments=True, do_secondary=False)
+
+    # Run a second round of moment calculations. This enables claculation
+    # of moments that depend on other, earlier moment map calculations
+
+    if do_secondary:
+        this_der.loop_derive_products(do_convolve=False, do_noise=False,
+                                    do_strictmask=False, do_broadmask=False,
+                                    do_moments=False, do_secondary=True)
+
+        
 
