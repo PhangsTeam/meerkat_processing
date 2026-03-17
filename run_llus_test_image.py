@@ -7,27 +7,46 @@ import sys
 
 from astropy.io import fits
 
-
 # Use boolean flags to set the steps to be performed when the pipeline
 # is called. See descriptions below (but only edit here).
 
-
 chunksize = 10
-target = 'J0459-26'
-do_staging = False
-do_imaging = False
-do_assemble = False
-do_postprocess = False
-do_stats = False
-
 # Pass the target name from the cmd line
+
+if len(sys.argv) != 4:
+    raise ValueError('LLUS SLURM processing requires exactly 3 command line arguments: target, stagestring, job_array_id')
 
 try: 
     chunk_num = int(sys.argv[-1])
 except ValueError:
-    chunk_num = 0
+    chunk_num = -1
 
-    
+do_staging = False
+do_imaging = False
+do_assemble = False
+do_postprocess = False
+do_derived = False
+
+stagestring = sys.argv[-2]
+if 'S' in stagestring:
+    do_staging = True
+    print('Adding STAGING step to this processing run')
+if 'I' in stagestring:
+    do_imaging = True
+    print('Adding IMAGING step to this processing run')
+if 'A' in stagestring:
+    do_assemble = True
+    print('Adding ASSEMBLY step to this processing run')
+if 'P' in stagestring:
+    do_postprocess = True
+    print('Adding POSTPROCESS step to this processing run')
+if 'D' in stagestring:
+    do_derived = True
+    print('Adding DERIVED step to this processing run')
+
+target = sys.argv[-3]
+if target.endswith('.py'):
+    raise ValueError('No target set at command line')
 
 # Locate the master key
 key_file = '/users/eros/code/meerkat_processing/llus_keys/master_key.txt'
