@@ -205,7 +205,7 @@ imaging_root 	        /idia/projects/llus/test/pipeline/imaging/
 postprocess_root        /idia/projects/llus/test/pipeline/postprocess/
 derived_root            /idia/projects/llus/test/pipeline/derived/
 release_root		    /idia/projects/llus/test/pipeline/release/
-ms_root			        /idia/projects/llus/test/
+ms_root			        /idia/projects/llus/
 singledish_root		    /idia/projects/llus/test/pipeline/singledish/
 
 # Data files

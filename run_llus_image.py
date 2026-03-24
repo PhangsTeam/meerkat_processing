@@ -10,7 +10,12 @@ from astropy.io import fits
 # Use boolean flags to set the steps to be performed when the pipeline
 # is called. See descriptions below (but only edit here).
 
+# Locate the master key
+key_file = '/users/eros/code/meerkat_processing/llus_keys/master_key.txt'
+sys.path.append(os.path.expanduser("/users/eros/code/phangs_imaging_scripts/"))
+sys.path.append(os.path.expanduser("/users/eros/code/analysis_scripts/"))
 chunksize = 10
+
 # Pass the target name from the cmd line
 
 if len(sys.argv) != 4:
@@ -47,11 +52,6 @@ if 'D' in stagestring:
 target = sys.argv[-3]
 if target.endswith('.py'):
     raise ValueError('No target set at command line')
-
-# Locate the master key
-key_file = '/users/eros/code/meerkat_processing/llus_keys/master_key.txt'
-sys.path.append(os.path.expanduser("/users/eros/code/phangs_imaging_scripts/"))
-sys.path.append(os.path.expanduser("/users/eros/code/analysis_scripts/"))
 
 from phangsPipeline import phangsLogger as pl
 pl.setup_logger(level='DEBUG', logfile=None)
@@ -121,17 +121,12 @@ this_uvh.set_interf_configs(only=['meerkat'])
 this_uvh.set_line_products()
 this_uvh.set_no_cont_products(False)
 
-# e.g., could be to be more selective:
-# this_uvh.set_targets(only=['ngc3489','ngc3599','ngc4476'])
-# this_uvh.set_interf_configs(only=['12m+7m'])
-# this_uvh.set_line_products(only=['co21'])
-
-this_imh.set_targets()
+this_imh.set_targets(only=[target])
 this_imh.set_interf_configs(only=['meerkat'])
 this_imh.set_no_cont_products(True)
 this_imh.set_line_products(only=['hi21cm'])
 
-this_pph.set_targets()
+this_pph.set_targets(only=[target])
 this_pph.set_interf_configs(only=['meerkat'])
 this_pph.set_feather_configs(only=[''])
 
@@ -185,7 +180,7 @@ if do_imaging:
 
 if do_assemble:
     this_imh = ImagingChunkedHandler(target, 'meerkat', 'hi21cm', this_kh,
-                                     chunksize=chunksize,
+                                     chunksize=chunksize, make_temp_dir=False,
                                      )
     # When running per chunk, combining into final cubes is a separate call
     this_imh.task_complete_gather_into_cubes(root_name='all')
@@ -203,17 +198,14 @@ if do_postprocess:
                               do_mosaic=True, do_cleanup=True)
 
 if do_derived:
-    import pip
-    pip.main(['install', 'astropy', '--user'])
-    pip.main(['install', 'spectral_cube', '--user'])
     import astropy
     import spectral_cube
-    print('Got here')
 
     this_der = der.DerivedHandler(key_handler=this_kh)
     this_der.set_interf_configs(only=['meerkat'])
     this_der.set_feather_configs(only=[])
     this_der.set_line_products(only=['hi21cm'])
+    this_der.set_targets(only=[target])
     do_convolve = True
     do_noise = True
     do_strictmask = True

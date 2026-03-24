@@ -35,7 +35,7 @@
 
 all		all	convolve_kw	{}
 
-all		all	noise_kw	{'spec_box':5,'iterations':3}
+all		all	noise_kw	{'spec_box':5,'iterations':3,'do_spec':False}
 
 all		all	strictmask_kw	{'hi_thresh':4.0,'hi_nchan':2,'lo_thresh':2.0,'lo_nchan':2}
 all		all	strictmask_kw	{'grow_xy':0,'grow_v':0}
@@ -43,8 +43,8 @@ all		all	strictmask_kw	{'min_pix':None,'min_area':None}
 
 all		all	broadmask_kw	{}
 
-all		all	phys_res	{'100pc':100.0,'200pc':200.0,'500pc':500.0,'1kpc':1000.0}
-all		all	ang_res		{'5as':5.0,'10as':10.0,'20as':20.0,'50as':50.0}
+all		all	phys_res	{'200pc':200.0,'500pc':500.0,'1kpc':1000.0,'2kpc':2000.0}
+all		all	ang_res		{'5as':5.0,'10as':10.0,'20as':20.0,'30as':30.0}
 
 # Change this as more data come in
 all		all	mask_configs	['meerkat']
