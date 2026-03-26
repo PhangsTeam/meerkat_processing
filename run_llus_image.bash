@@ -2,7 +2,7 @@
 #SBATCH --account=b234-llus-ag
 #SBATCH --time=24:00:00
 #SBATCH --job-name=llus_4945
-#SBATCH --output=llus_test-%J.out
+#SBATCH --output=llus_-%J.out
 #SBATCH --ntasks=1    # number of MPI processes
 #SBATCH --mem=32G      # memory; default unit is megabytes
 #SBATCH --cpus-per-task=8

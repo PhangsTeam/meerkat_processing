@@ -33,18 +33,49 @@ do_postprocess = False
 do_derived = False
 
 stagestring = sys.argv[-2]
+
+from phangsPipeline import handlerKeys as kh
+this_kh = kh.KeyHandler(master_key=key_file)
+
 if 'S' in stagestring:
     do_staging = True
     print('Adding STAGING step to this processing run')
+    from phangsPipeline import handlerVis as uvh
+    this_uvh = uvh.VisHandler(key_handler=this_kh)
+    this_uvh.set_targets(only=[target])
+    this_uvh.set_interf_configs(only=['meerkat'])
+    this_uvh.set_line_products()
+    this_uvh.set_no_cont_products(False)
+
+
 if 'I' in stagestring:
     do_imaging = True
     print('Adding IMAGING step to this processing run')
+    from phangsPipeline import handlerImaging as imh
+    from phangsPipeline.handlerImagingChunked import ImagingChunkedHandler
+    this_imh = imh.ImagingHandler(key_handler=this_kh)
+    this_imh.set_targets(only=[target])
+    this_imh.set_interf_configs(only=['meerkat'])
+    this_imh.set_no_cont_products(True)
+    this_imh.set_line_products(only=['hi21cm'])
+
 if 'A' in stagestring:
     do_assemble = True
     print('Adding ASSEMBLY step to this processing run')
+    from phangsPipeline import handlerImaging as imh
+    from phangsPipeline.handlerImagingChunked import ImagingChunkedHandler
+    this_imh = imh.ImagingHandler(key_handler=this_kh)
+
+
 if 'P' in stagestring:
     do_postprocess = True
     print('Adding POSTPROCESS step to this processing run')
+    from phangsPipeline import handlerPostprocess as pph
+    this_pph = pph.PostProcessHandler(key_handler=this_kh)
+    this_pph.set_targets(only=[target])
+    this_pph.set_interf_configs(only=['meerkat'])
+    this_pph.set_feather_configs(only=[''])
+
 if 'D' in stagestring:
     do_derived = True
     print('Adding DERIVED step to this processing run')
@@ -59,13 +90,9 @@ pl.setup_logger(level='DEBUG', logfile=None)
 # Imports
 
 # sys.path.insert(1, )
-from phangsPipeline import handlerKeys as kh
-from phangsPipeline import handlerVis as uvh
-from phangsPipeline import handlerImaging as imh
-from phangsPipeline import handlerPostprocess as pph
+
 from phangsPipeline import handlerDerived as der
 
-from phangsPipeline.handlerImagingChunked import ImagingChunkedHandler
 
 # Initialize the various handler objects. First initialize the
 # KeyHandler, which reads the master key and the files linked in the
@@ -74,10 +101,6 @@ from phangsPipeline.handlerImagingChunked import ImagingChunkedHandler
 # PostProcessHandler), which run the actual pipeline using the project
 # definitions from the KeyHandler.
 
-this_kh = kh.KeyHandler(master_key=key_file)
-this_uvh = uvh.VisHandler(key_handler=this_kh)
-this_imh = imh.ImagingHandler(key_handler=this_kh)
-this_pph = pph.PostProcessHandler(key_handler=this_kh)
 
 # Make any missing directories
 
@@ -116,19 +139,10 @@ this_kh.make_missing_directories(imaging=True, derived=True, postprocess=True, r
 # image the CO 2-1 line from these, and then postprocess the CO 2-1
 # cubes.
 
-this_uvh.set_targets(only=[target])
-this_uvh.set_interf_configs(only=['meerkat'])
-this_uvh.set_line_products()
-this_uvh.set_no_cont_products(False)
 
-this_imh.set_targets(only=[target])
-this_imh.set_interf_configs(only=['meerkat'])
-this_imh.set_no_cont_products(True)
-this_imh.set_line_products(only=['hi21cm'])
 
-this_pph.set_targets(only=[target])
-this_pph.set_interf_configs(only=['meerkat'])
-this_pph.set_feather_configs(only=[''])
+
+
 
 
 ##############################################################################
