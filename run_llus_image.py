@@ -16,10 +16,13 @@ sys.path.append(os.path.expanduser("/users/eros/code/phangs_imaging_scripts/"))
 sys.path.append(os.path.expanduser("/users/eros/code/analysis_scripts/"))
 chunksize = 10
 
+
 # Pass the target name from the cmd line
 
 if len(sys.argv) != 4:
     raise ValueError('LLUS SLURM processing requires exactly 3 command line arguments: target, stagestring, job_array_id')
+
+target = sys.argv[-3]
 
 try: 
     chunk_num = int(sys.argv[-1])
@@ -80,7 +83,7 @@ if 'D' in stagestring:
     do_derived = True
     print('Adding DERIVED step to this processing run')
 
-target = sys.argv[-3]
+
 if target.endswith('.py'):
     raise ValueError('No target set at command line')
 
